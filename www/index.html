@@ -1,0 +1,1740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCQ Ace - Enhanced Timer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a0ca3;
+            --success: #4cc9f0;
+            --danger: #f72585;
+            --warning: #f8961e;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --border: #dee2e6;
+            --card-bg: #ffffff;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        body.dark-mode {
+            --primary: #4895ef;
+            --primary-dark: #3a0ca3;
+            --light: #121212;
+            --dark: #e9ecef;
+            --gray: #adb5bd;
+            --border: #2d2d3a;
+            --card-bg: #1e1e2d;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode {
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 100%);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header Styles */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        /* Button Styles */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-success {
+            background-color: var(--success);
+            color: var(--dark);
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .btn-warning {
+            background-color: var(--warning);
+            color: var(--dark);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 13px;
+        }
+
+        /* Controls Section */
+        .controls-section {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .control-label {
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .control-input {
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 2px solid var(--border);
+            background: var(--card-bg);
+            color: var(--dark);
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .control-input:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+
+        /* Timer Section */
+        .timer-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border);
+        }
+
+        #timerDisplay {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary);
+            min-width: 80px;
+            text-align: center;
+        }
+
+        /* Progress Bar */
+        #progressBarContainer {
+            height: 6px;
+            background: var(--border);
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+
+        #progressBar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+            width: 100%;
+            transition: width 1s linear;
+        }
+
+        /* Floating Timer */
+        #floatingTimer {
+            position: fixed;
+            top: 90px;
+            right: 30px;
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 15px 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            z-index: 1000;
+            cursor: move;
+            transition: all 0.3s ease;
+        }
+
+        #floatingTimerHeader {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        #floatingTimerTitle {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        #floatingTimerDisplay {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-align: center;
+            min-width: 120px;
+        }
+
+        .floating-timer-controls {
+            display: flex;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .floating-timer-btn {
+            flex: 1;
+            padding: 8px 12px;
+            font-size: 13px;
+        }
+
+        #minimizeTimer {
+            background: transparent;
+            border: none;
+            color: var(--primary);
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        /* Main Content */
+        .main-content {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 25px;
+        }
+
+        @media (max-width: 992px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Question Status */
+        .status-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            height: fit-content;
+            top: 20px;
+        }
+
+        .status-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .status-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        #searchQuestion {
+            width: 100%;
+            padding: 10px 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border: 2px solid var(--border);
+            background: var(--card-bg);
+            color: var(--dark);
+        }
+
+        .status-table {
+            width: 100%;
+            border-collapse: collapse;
+            max-height: 400px;
+            overflow-y: auto;
+            display: block;
+        }
+
+        .status-table thead,
+        .status-table tbody {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+        }
+
+        .status-table th {
+            background: var(--primary);
+            color: white;
+            padding: 10px;
+            text-align: left;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .status-table tr {
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .status-table tr:hover {
+            background: rgba(67, 97, 238, 0.05);
+        }
+
+        .status-table td {
+            padding: 10px;
+            font-size: 14px;
+        }
+
+        .status-unattempted {
+            color: var(--gray);
+        }
+
+        .status-attempted {
+            color: var(--warning);
+            font-weight: 600;
+        }
+
+        .status-correct {
+            color: var(--success);
+            font-weight: 600;
+        }
+
+        .status-incorrect {
+            color: var(--danger);
+            font-weight: 600;
+        }
+
+        /* Progress Tracker */
+        .progress-tracker {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            background: rgba(67, 97, 238, 0.05);
+            border: 1px solid var(--border);
+        }
+
+        .progress-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .progress-stat {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--dark);
+        }
+
+        .stat-value {
+            font-weight: 600;
+        }
+
+        /* MCQ Container */
+        .mcq-container {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            margin-bottom: 20px;
+        }
+
+        .mcq-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .mcq-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .mcq-navigation {
+            display: flex;
+            gap: 10px;
+        }
+
+        .mcq-item {
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .mcq-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .mcq-item.highlighted {
+            background: rgba(67, 97, 238, 0.05);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+
+        .question-number {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+
+        .options-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            padding: 8px 15px;
+            border-radius: 8px;
+            background: rgba(67, 97, 238, 0.08);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+            user-select: none;
+        }
+
+        .option-label:hover {
+            background: rgba(67, 97, 238, 0.15);
+        }
+
+        .option-radio {
+            display: none;
+        }
+
+        .option-radio:checked + .option-label {
+            background: rgba(67, 97, 238, 0.2);
+            border-color: var(--primary);
+            font-weight: 500;
+        }
+
+        .option-radio:disabled + .option-label {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Correct Answers */
+        .correct-container {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            margin-bottom: 20px;
+        }
+
+        .correct-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .correct-item {
+            margin-bottom: 15px;
+        }
+
+        .correct-question {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--dark);
+        }
+
+        /* Results Section */
+        #result {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            margin-top: 20px;
+            display: none;
+        }
+
+        .result-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .result-score {
+            font-size: 2.5rem;
+            font-weight: 800;
+            text-align: center;
+            margin: 20px 0;
+            background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .result-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 25px 0;
+        }
+
+        .stat-card {
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            background: rgba(67, 97, 238, 0.05);
+            border: 1px solid var(--border);
+        }
+
+        .stat-name {
+            font-size: 1rem;
+            margin-bottom: 10px;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .correct-stat {
+            color: var(--success);
+        }
+
+        .incorrect-stat {
+            color: var(--danger);
+        }
+
+        .unattempted-stat {
+            color: var(--warning);
+        }
+
+        /* Action Buttons Section */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .action-buttons .btn {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        /* Scroll to top button */
+        #scrollTopBtn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        #scrollTopBtn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Dark Mode Toggle */
+        #darkModeToggle {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            padding: 8px 15px;
+        }
+
+        /* Notification styles */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            z-index: 1001;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background-color: var(--success);
+            color: var(--dark);
+        }
+
+        .notification.error {
+            background-color: var(--danger);
+        }
+
+        /* Placeholder Styles */
+        .placeholder {
+            text-align: center;
+            padding: 40px 0;
+            color: var(--gray);
+        }
+
+        .placeholder i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        .placeholder p {
+            font-size: 18px;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .controls-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .timer-section {
+                flex-wrap: wrap;
+            }
+
+            .mcq-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .mcq-navigation {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .action-buttons .btn {
+                width: 100%;
+            }
+
+            #floatingTimer {
+                top: 80px;
+                right: 15px;
+                padding: 12px 15px;
+            }
+        }
+
+        /* Animation Classes */
+        .correct-answer {
+            animation: pulse 0.5s ease-in-out;
+        }
+
+        .incorrect-answer {
+            animation: shake 0.4s ease-in-out;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+        }
+
+        /* Mini timer styles */
+        #miniTimer {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: var(--card-bg);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        #miniTimer:hover {
+            transform: scale(1.1);
+        }
+
+        #miniTimerDisplay {
+            font-weight: 600;
+            font-size: 12px;
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Module Ease</h1>
+            <button id="darkModeToggle" class="btn btn-outline">🌙 Dark Mode</button>
+        </div>
+
+        <!-- Floating Timer Container -->
+        <div id="floatingTimer">
+            <div id="floatingTimerHeader">
+                <span id="floatingTimerTitle">Timer</span>
+                <button id="minimizeTimer"><i class="fas fa-times"></i></button>
+            </div>
+            <div id="floatingTimerDisplay">10:00</div>
+            <div class="floating-timer-controls">
+                <button onclick="pauseTimer()" id="pauseTimerButton" class="btn btn-outline floating-timer-btn">⏸️ Pause</button>
+            </div>
+        </div>
+
+        <div class="controls-section">
+            <div class="controls-grid">
+                <div class="control-group">
+                    <label class="control-label">From Question:</label>
+                    <input type="number" id="fromQuestion" class="control-input" value="1" min="1" max="200" autocomplete="off">
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label">To Question:</label>
+                    <input type="number" id="toQuestion" class="control-input" value="5" min="1" max="200" autocomplete="off">
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label">Set Timer (minutes):</label>
+                    <input type="number" id="timerInput" class="control-input" min="1" max="200" value="10">
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label">Correct Answers:</label>
+                    <textarea id="answerKeyInput" class="control-input" rows="2" placeholder="e.g., 1=A, 2=B, 3=C"></textarea>
+                </div>
+            </div>
+
+            <div id="progressBarContainer">
+                <div id="progressBar"></div>
+            </div>
+
+            <div class="timer-section">
+                <button onclick="confirmStartTimer()" class="btn btn-primary">Start Timer</button>
+                <span id="timerDisplay">10:00</span>
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
+                <button onclick="generateQuestions()" class="btn btn-primary">Generate Questions</button>
+                <button onclick="processAnswerKey()" class="btn btn-success">Auto-Fill Answers</button>
+                <button onclick="resetAll()" class="btn btn-danger">Reset All</button>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="status-card">
+                <div class="status-header">
+                    <h2 class="status-title">Question Status</h2>
+                </div>
+                <input type="text" id="searchQuestion" placeholder="Search question number..." oninput="filterQuestions()">
+                <table class="status-table">
+                    <thead>
+                        <tr>
+                            <th>Question</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="questionStatusTable">
+                        <!-- Filled by JavaScript -->
+                    </tbody>
+                </table>
+
+                <div class="progress-tracker">
+                    <h3 class="progress-title">Progress Tracker</h3>
+                    <div class="progress-stat">
+                        <span class="stat-label">Attempted:</span>
+                        <span class="stat-value" id="totalAttempted">0</span>
+                    </div>
+                    <div class="progress-stat">
+                        <span class="stat-label">Accuracy:</span>
+                        <span class="stat-value" id="accuracy">0%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="mcq-container">
+                    <div class="mcq-header">
+                        <h2 class="mcq-title">Mark Your Answers</h2>
+                        <div class="mcq-navigation">
+                            <button onclick="navigateQuestions(-1)" class="btn btn-outline btn-sm">← Previous</button>
+                            <button onclick="navigateQuestions(1)" class="btn btn-outline btn-sm">Next →</button>
+                        </div>
+                    </div>
+                    <div id="mcqContainer">
+                        <div class="placeholder">
+                            <i class="fas fa-spinner"></i>
+                            <p>Generate questions to begin</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="correct-container">
+                    <h2 class="correct-title">Mark Correct Answers</h2>
+                    <div id="correctContainer">
+                        <div class="placeholder">
+                            <i class="fas fa-check-circle"></i>
+                            <p>Correct answers will appear here</p>
+                        </div>
+                    </div>
+                </div>
+
+                <button onclick="calculateScore()" class="btn btn-primary" style="width: 100%; padding: 15px; font-size: 16px; margin-top: 10px;">
+                    Calculate Final Score
+                </button>
+
+                <div id="result"></div>
+            </div>
+        </div>
+    </div>
+
+    <button id="scrollTopBtn" onclick="scrollToTop()">↑</button>
+
+    <script>
+        // Global variables
+        let timerInterval;
+        let timeLeft = 0;
+        let isPaused = false;
+        let totalTime = 0;
+        let alertShown = false;
+        let testCompleted = false;
+        let wrongQuestions = [];
+        let unattemptedQuestions = [];
+
+        // Dark Mode Toggle
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        darkModeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            darkModeToggle.textContent = document.body.classList.contains('dark-mode') ? "☀️ Light Mode" : "🌙 Dark Mode";
+        });
+
+        // Notification system
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => notification.classList.add('show'), 100);
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Timer Logic
+        function startTimer() {
+            clearInterval(timerInterval);
+            const timerInput = document.getElementById('timerInput').value;
+            if (!timerInput || timerInput < 1 || timerInput > 200) {
+                showNotification("Please enter a valid timer value (1 to 200 minutes).", 'error');
+                return;
+            }
+
+            timeLeft = timerInput * 60;
+            totalTime = timerInput * 60;
+            isPaused = false;
+            alertShown = false;
+            testCompleted = false;
+            const timerDisplay = document.getElementById('timerDisplay');
+            const floatingTimerDisplay = document.getElementById('floatingTimerDisplay');
+            const pauseTimerButton = document.getElementById('pauseTimerButton');
+
+            timerInterval = setInterval(() => {
+                if (!isPaused) {
+                    const progressPercent = (timeLeft / totalTime) * 100;
+                    document.getElementById('progressBar').style.width = `${progressPercent}%`;
+
+                    const minutes = Math.floor(timeLeft / 60);
+                    const seconds = timeLeft % 60;
+                    const timeString = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+
+                    timerDisplay.textContent = timeString;
+                    floatingTimerDisplay.textContent = timeString;
+                    
+                    // Update mini timer if it exists
+                    const miniTimerDisplay = document.getElementById('miniTimerDisplay');
+                    if (miniTimerDisplay) {
+                        miniTimerDisplay.textContent = timeString;
+                    }
+
+                    if (timeLeft === 10 && !alertShown) {
+                        showNotification("⚠️ Only 10 seconds remaining! Hurry up!", 'error');
+                        alertShown = true;
+                    }
+
+                    if (timeLeft <= 0) {
+                        clearInterval(timerInterval);
+                        timerDisplay.textContent = "Time's up!";
+                        floatingTimerDisplay.textContent = "Time's up!";
+                        if (miniTimerDisplay) {
+                            miniTimerDisplay.textContent = "0:00";
+                        }
+                        lockMCQOptions();
+                        unlockCorrectAnswers();
+                        showNotification("Time's up! Test completed automatically.", 'error');
+                        return;
+                    }
+                    timeLeft--;
+                }
+            }, 1000);
+
+            pauseTimerButton.textContent = "⏸️ Pause";
+            showNotification("Timer started successfully!", 'success');
+        }
+
+        function pauseTimer() {
+            if (timeLeft <= 0) return;
+            const pauseTimerButton = document.getElementById('pauseTimerButton');
+            isPaused = !isPaused;
+            pauseTimerButton.textContent = isPaused ? "▶️ Resume" : "⏸️ Pause";
+            showNotification(isPaused ? "Timer paused" : "Timer resumed", 'success');
+        }
+
+        function lockMCQOptions() {
+            const mcqInputs = document.querySelectorAll('#mcqContainer input[type="radio"]');
+            mcqInputs.forEach(input => input.disabled = true);
+        }
+
+        function unlockCorrectAnswers() {
+            const correctInputs = document.querySelectorAll('#correctContainer input[type="radio"]');
+            correctInputs.forEach(input => input.disabled = false);
+        }
+
+        // Floating Timer Drag Functionality
+        const floatingTimer = document.getElementById('floatingTimer');
+        let isDragging = false;
+        let currentX;
+        let currentY;
+        let initialX;
+        let initialY;
+        let xOffset = 0;
+        let yOffset = 0;
+
+        floatingTimer.addEventListener("mousedown", dragStart);
+        floatingTimer.addEventListener("touchstart", dragStart, { passive: false });
+        document.addEventListener("mouseup", dragEnd);
+        document.addEventListener("touchend", dragEnd);
+        document.addEventListener("mousemove", drag);
+        document.addEventListener("touchmove", drag, { passive: false });
+
+        function dragStart(e) {
+            if (e.target.closest('#minimizeTimer') || e.target.closest('.floating-timer-controls')) {
+                return;
+            }
+
+            if (e.type === "touchstart") {
+                initialX = e.touches[0].clientX - xOffset;
+                initialY = e.touches[0].clientY - yOffset;
+            } else {
+                initialX = e.clientX - xOffset;
+                initialY = e.clientY - yOffset;
+            }
+
+            isDragging = true;
+            floatingTimer.style.cursor = 'grabbing';
+        }
+
+        function dragEnd(e) {
+            initialX = currentX;
+            initialY = currentY;
+            isDragging = false;
+            floatingTimer.style.cursor = 'move';
+        }
+
+        function drag(e) {
+            if (isDragging) {
+                e.preventDefault();
+
+                if (e.type === "touchmove") {
+                    currentX = e.touches[0].clientX - initialX;
+                    currentY = e.touches[0].clientY - initialY;
+                } else {
+                    currentX = e.clientX - initialX;
+                    currentY = e.clientY - initialY;
+                }
+
+                xOffset = currentX;
+                yOffset = currentY;
+
+                setTranslate(currentX, currentY, floatingTimer);
+            }
+        }
+
+        function setTranslate(xPos, yPos, el) {
+            el.style.transform = "translate3d(" + xPos + "px, " + yPos + "px, 0)";
+        }
+
+        // Minimize floating timer
+        document.getElementById('minimizeTimer').addEventListener('click', function() {
+            floatingTimer.style.display = 'none';
+            const existingMiniTimer = document.getElementById('miniTimer');
+            if (existingMiniTimer) {
+                existingMiniTimer.remove();
+            }
+
+            const miniTimer = document.createElement('div');
+            miniTimer.id = 'miniTimer';
+            miniTimer.innerHTML = `<span id="miniTimerDisplay" style="font-weight: 600; font-size: 12px; color: var(--primary);">10:00</span>`;
+            
+            miniTimer.addEventListener('click', function() {
+                floatingTimer.style.display = 'flex';
+                miniTimer.remove();
+            });
+            
+            document.body.appendChild(miniTimer);
+        });
+
+        // Question Status Table
+        function createQuestionStatusTable(fromQuestion, toQuestion) {
+            const tableBody = document.getElementById('questionStatusTable');
+            tableBody.innerHTML = '';
+
+            for (let i = fromQuestion; i <= toQuestion; i++) {
+                const row = document.createElement('tr');
+                row.id = `questionStatusRow${i}`;
+                row.innerHTML = `
+                    <td>Question ${i}</td>
+                    <td class="status-unattempted">Unattempted</td>
+                `;
+                row.addEventListener('click', () => {
+                    const questionElement = document.getElementById(`q${i}`);
+                    if (questionElement) {
+                        questionElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        // Highlight the question temporarily
+                        document.querySelectorAll('.mcq-item').forEach(q => q.classList.remove('highlighted'));
+                        questionElement.classList.add('highlighted');
+                        setTimeout(() => questionElement.classList.remove('highlighted'), 2000);
+                    }
+                });
+                tableBody.appendChild(row);
+            }
+        }
+
+        function updateQuestionStatus(questionNumber, status) {
+            const row = document.getElementById(`questionStatusRow${questionNumber}`);
+            if (row) {
+                const statusCell = row.querySelector('td:last-child');
+                statusCell.className = '';
+                statusCell.textContent = status === 'attempted' ? 'Attempted' :
+                                       status === 'attempted-correct' ? 'Correct' :
+                                       status === 'attempted-incorrect' ? 'Incorrect' :
+                                       'Unattempted';
+
+                if (status === 'attempted') {
+                    statusCell.classList.add('status-attempted');
+                } else if (status === 'attempted-correct') {
+                    statusCell.classList.add('status-correct');
+                } else if (status === 'attempted-incorrect') {
+                    statusCell.classList.add('status-incorrect');
+                } else {
+                    statusCell.classList.add('status-unattempted');
+                }
+            }
+        }
+
+        // Progress Tracker
+        function updateProgressTracker(correctCount, totalAttempted) {
+            const accuracy = totalAttempted === 0 ? 0 : Math.round((correctCount / totalAttempted) * 100);
+            document.getElementById('totalAttempted').textContent = totalAttempted;
+            document.getElementById('accuracy').textContent = `${accuracy}%`;
+        }
+
+        function generateQuestions() {
+            const fromQuestion = parseInt(document.getElementById('fromQuestion').value);
+            const toQuestion = parseInt(document.getElementById('toQuestion').value);
+
+            if (fromQuestion < 1 || toQuestion < 1 || fromQuestion > 200 || toQuestion > 200) {
+                showNotification("Question numbers must be between 1 and 200.", 'error');
+                return;
+            }
+            if (fromQuestion > toQuestion) {
+                showNotification("'From' question number must be less than or equal to 'To' question number.", 'error');
+                return;
+            }
+            if (toQuestion - fromQuestion + 1 > 200) {
+                showNotification("Maximum number of questions is 200.", 'error');
+                return;
+            }
+
+            const mcqContainer = document.getElementById('mcqContainer');
+            const correctContainer = document.getElementById('correctContainer');
+
+            mcqContainer.innerHTML = '';
+            correctContainer.innerHTML = '';
+
+            // Reset global arrays
+            wrongQuestions = [];
+            unattemptedQuestions = [];
+            testCompleted = false;
+
+            createQuestionStatusTable(fromQuestion, toQuestion);
+
+            for (let i = fromQuestion; i <= toQuestion; i++) {
+                const mcqDiv = document.createElement('div');
+                mcqDiv.classList.add('mcq-item');
+                mcqDiv.id = `q${i}`;
+                mcqDiv.innerHTML = `
+                    <div class="question-number">Q${i}:</div>
+                    <div class="options-container">
+                        <input type="radio" id="q${i}-A" name="q${i}" value="A" class="option-radio">
+                        <label for="q${i}-A" class="option-label">A</label>
+
+                        <input type="radio" id="q${i}-B" name="q${i}" value="B" class="option-radio">
+                        <label for="q${i}-B" class="option-label">B</label>
+
+                        <input type="radio" id="q${i}-C" name="q${i}" value="C" class="option-radio">
+                        <label for="q${i}-C" class="option-label">C</label>
+
+                        <input type="radio" id="q${i}-D" name="q${i}" value="D" class="option-radio">
+                        <label for="q${i}-D" class="option-label">D</label>
+                    </div>
+                `;
+                mcqContainer.appendChild(mcqDiv);
+
+                const radioButtons = mcqDiv.querySelectorAll('input[type="radio"]');
+                radioButtons.forEach(button => {
+                    button.addEventListener('change', function() {
+                        if (this.checked) {
+                            updateQuestionStatus(i, 'attempted');
+                            updateProgressTracker();
+                        }
+                    });
+
+                    const label = mcqDiv.querySelector(`label[for="${button.id}"]`);
+                    label.addEventListener('click', function(e) {
+                        if (button.disabled) {
+                            e.preventDefault();
+                            return;
+                        }
+                        
+                        if (button.checked) {
+                            e.preventDefault();
+                            setTimeout(() => {
+                                button.checked = false;
+                                updateQuestionStatus(i, 'unattempted');
+                                updateProgressTracker();
+                            }, 10);
+                        }
+                    });
+                });
+
+                const correctDiv = document.createElement('div');
+                correctDiv.classList.add('correct-item');
+                correctDiv.innerHTML = `
+                    <div class="correct-question">Correct Answer for Q${i}:</div>
+                    <div class="options-container">
+                        <input type="radio" id="correct${i}-A" name="correct${i}" value="A" class="option-radio">
+                        <label for="correct${i}-A" class="option-label">A</label>
+
+                        <input type="radio" id="correct${i}-B" name="correct${i}" value="B" class="option-radio">
+                        <label for="correct${i}-B" class="option-label">B</label>
+
+                        <input type="radio" id="correct${i}-C" name="correct${i}" value="C" class="option-radio">
+                        <label for="correct${i}-C" class="option-label">C</label>
+
+                        <input type="radio" id="correct${i}-D" name="correct${i}" value="D" class="option-radio">
+                        <label for="correct${i}-D" class="option-label">D</label>
+                    </div>
+                `;
+                correctContainer.appendChild(correctDiv);
+
+                const correctRadios = correctDiv.querySelectorAll('input[type="radio"]');
+                correctRadios.forEach(radio => {
+                    const label = correctDiv.querySelector(`label[for="${radio.id}"]`);
+                    label.addEventListener('click', function(e) {
+                        if (radio.checked) {
+                            e.preventDefault();
+                            setTimeout(() => {
+                                radio.checked = false;
+                            }, 10);
+                        }
+                    });
+                });
+            }
+
+            showNotification(`Generated questions ${fromQuestion} to ${toQuestion} successfully!`, 'success');
+        }
+
+        function updateProgressTracker() {
+            const fromQuestion = parseInt(document.getElementById('fromQuestion').value);
+            const toQuestion = parseInt(document.getElementById('toQuestion').value);
+            let totalAttempted = 0;
+            let correctCount = 0;
+
+            for (let i = fromQuestion; i <= toQuestion; i++) {
+                const selectedAnswer = document.querySelector(`input[name="q${i}"]:checked`);
+                if (selectedAnswer) {
+                    totalAttempted++;
+                    
+                    const correctAnswer = document.querySelector(`input[name="correct${i}"]:checked`);
+                    if (correctAnswer && selectedAnswer.value === correctAnswer.value) {
+                        correctCount++;
+                    }
+                }
+            }
+
+            const accuracy = totalAttempted === 0 ? 0 : Math.round((correctCount / totalAttempted) * 100);
+            document.getElementById('totalAttempted').textContent = totalAttempted;
+            document.getElementById('accuracy').textContent = `${accuracy}%`;
+        }
+
+        // Save wrong and unattempted questions to text file
+        function saveWrongAndUnattemptedQuestions() {
+            if (!testCompleted) {
+                showNotification("Please calculate the score first to save results.", 'error');
+                return;
+            }
+
+            const fromQuestion = parseInt(document.getElementById('fromQuestion').value);
+            const toQuestion = parseInt(document.getElementById('toQuestion').value);
+            const currentDate = new Date().toLocaleString();
+            
+            let content = `MCQ Test Results - Wrong and Unattempted Questions\n`;
+            content += `Date: ${currentDate}\n`;
+            content += `Question Range: ${fromQuestion} to ${toQuestion}\n`;
+            content += `${'='.repeat(60)}\n\n`;
+
+            let hasContent = false;
+
+            // Add wrong questions
+            if (wrongQuestions.length > 0) {
+                content += `INCORRECT ANSWERS (${wrongQuestions.length} questions):\n`;
+                content += `-`.repeat(40) + '\n';
+                wrongQuestions.forEach(item => {
+                    content += `Question ${item.questionNumber}:\n`;
+                    content += `  Your Answer: ${item.yourAnswer}\n`;
+                    content += `  Correct Answer: ${item.correctAnswer}\n\n`;
+                });
+                hasContent = true;
+            }
+
+            // Add unattempted questions
+            if (unattemptedQuestions.length > 0) {
+                if (hasContent) content += '\n';
+                content += `UNATTEMPTED QUESTIONS (${unattemptedQuestions.length} questions):\n`;
+                content += `-`.repeat(40) + '\n';
+                unattemptedQuestions.forEach(item => {
+                    content += `Question ${item.questionNumber}:\n`;
+                    content += `  Correct Answer: ${item.correctAnswer}\n\n`;
+                });
+                hasContent = true;
+            }
+
+            if (!hasContent) {
+                content += "Congratulations! No wrong or unattempted questions found.\n";
+                content += "You answered all questions correctly!\n";
+            }
+
+            content += `\n${'='.repeat(60)}\n`;
+            content += `Summary:\n`;
+            content += `- Wrong Answers: ${wrongQuestions.length}\n`;
+            content += `- Unattempted: ${unattemptedQuestions.length}\n`;
+            content += `- Total Issues: ${wrongQuestions.length + unattemptedQuestions.length}\n`;
+
+            // Create and download the file
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `MCQ_Review_Questions_${fromQuestion}-${toQuestion}_${new Date().toISOString().split('T')[0]}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            showNotification("Review questions saved successfully!", 'success');
+        }
+
+        function calculateScore() {
+            if (testCompleted) {
+                showNotification("Score already calculated. Reset to calculate again.", 'error');
+                return;
+            }
+
+            const fromQuestion = parseInt(document.getElementById('fromQuestion').value);
+            const toQuestion = parseInt(document.getElementById('toQuestion').value);
+            let score = 0;
+            let correctCount = 0;
+            let incorrectCount = 0;
+            let unansweredCount = 0;
+            let totalAttempted = 0;
+
+            // Reset arrays
+            wrongQuestions = [];
+            unattemptedQuestions = [];
+
+            for (let i = fromQuestion; i <= toQuestion; i++) {
+                const selectedAnswer = document.querySelector(`input[name="q${i}"]:checked`);
+                const correctAnswer = document.querySelector(`input[name="correct${i}"]:checked`);
+
+                if (!correctAnswer) {
+                    showNotification(`Please mark the correct answer for Question ${i}`, 'error');
+                    return;
+                }
+
+                if (selectedAnswer) {
+                    totalAttempted++;
+                    if (selectedAnswer.value === correctAnswer.value) {
+                        score += 4;
+                        correctCount++;
+                        selectedAnswer.closest('.mcq-item').classList.add('correct-answer');
+                        updateQuestionStatus(i, 'attempted-correct');
+                    } else {
+                        score -= 1;
+                        incorrectCount++;
+                        selectedAnswer.closest('.mcq-item').classList.add('incorrect-answer');
+                        updateQuestionStatus(i, 'attempted-incorrect');
+
+                        // Add to wrong questions array
+                        wrongQuestions.push({
+                            questionNumber: i,
+                            yourAnswer: selectedAnswer.value,
+                            correctAnswer: correctAnswer.value
+                        });
+
+                        const mcqDiv = document.getElementById(`q${i}`);
+                        const existingFeedback = mcqDiv.querySelector('.answer-feedback');
+                        if (!existingFeedback) {
+                            mcqDiv.innerHTML += `
+                                <div class="answer-feedback" style="margin-top: 10px; padding: 8px; border-radius: 6px; font-size: 14px; background: rgba(247, 37, 133, 0.1); color: var(--danger); border-left: 4px solid var(--danger);">
+                                    <strong>Your answer:</strong> ${selectedAnswer.value} | <strong>Correct answer:</strong> ${correctAnswer.value}
+                                </div>
+                            `;
+                        }
+                    }
+                } else {
+                    unansweredCount++;
+                    updateQuestionStatus(i, 'unattempted');
+
+                    // Add to unattempted questions array
+                    unattemptedQuestions.push({
+                        questionNumber: i,
+                        correctAnswer: correctAnswer.value
+                    });
+
+                    const mcqDiv = document.getElementById(`q${i}`);
+                    const existingFeedback = mcqDiv.querySelector('.answer-feedback');
+                    if (!existingFeedback) {
+                        mcqDiv.innerHTML += `
+                            <div class="answer-feedback" style="margin-top: 10px; padding: 8px; border-radius: 6px; font-size: 14px; background: rgba(248, 150, 30, 0.1); color: var(--warning); border-left: 4px solid var(--warning);">
+                                <strong>Correct answer:</strong> ${correctAnswer.value}
+                            </div>
+                        `;
+                    }
+                }
+            }
+
+            const totalPossibleScore = (toQuestion - fromQuestion + 1) * 4;
+            const percentage = Math.round((score / totalPossibleScore) * 100);
+
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = `
+                <h2 class="result-title">🎯 Test Results</h2>
+                <div class="result-score">${score}/${totalPossibleScore} (${percentage}%)</div>
+
+                <div class="result-stats">
+                    <div class="stat-card">
+                        <div class="stat-name">✅ Correct Answers</div>
+                        <div class="stat-value correct-stat">${correctCount}</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-name">❌ Incorrect Answers</div>
+                        <div class="stat-value incorrect-stat">${incorrectCount}</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-name">⏸️ Unanswered</div>
+                        <div class="stat-value unattempted-stat">${unansweredCount}</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-name">🎯 Accuracy</div>
+                        <div class="stat-value">${totalAttempted ? Math.round((correctCount / totalAttempted) * 100) : 0}%</div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button onclick="saveWrongAndUnattemptedQuestions()" class="btn btn-warning">
+                        <i class="fas fa-download"></i> Save Review Questions
+                    </button>
+                    <button onclick="resetAll()" class="btn btn-danger">
+                        <i class="fas fa-refresh"></i> Start New Test
+                    </button>
+                </div>
+            `;
+
+            testCompleted = true;
+            updateProgressTracker(correctCount, totalAttempted);
+            
+            // Stop timer if running
+            if (timerInterval) {
+                clearInterval(timerInterval);
+            }
+
+            showNotification(`Test completed! Score: ${score}/${totalPossibleScore} (${percentage}%)`, 'success');
+        }
+
+        function processAnswerKey() {
+            const answerKeyInput = document.getElementById('answerKeyInput').value.trim();
+            if (!answerKeyInput) {
+                showNotification("Please enter the correct answers in the format: 1=A, 2=B, 3=C", 'error');
+                return;
+            }
+
+            const correctAnswers = parseAnswerKeyInput(answerKeyInput);
+            if (Object.keys(correctAnswers).length === 0) {
+                showNotification("No valid answer format found. Use format: 1=A, 2=B, 3=C", 'error');
+                return;
+            }
+
+            autoFillCorrectAnswers(correctAnswers);
+            showNotification(`Auto-filled ${Object.keys(correctAnswers).length} correct answers!`, 'success');
+        }
+
+        function parseAnswerKeyInput(input) {
+            const correctAnswers = {};
+            const pairs = input.split(',');
+
+            for (const pair of pairs) {
+                const match = pair.trim().match(/(\d+)\s*=\s*([A-D])/i);
+                if (match) {
+                    const questionNumber = parseInt(match[1]);
+                    const answer = match[2].toUpperCase();
+                    correctAnswers[questionNumber] = answer;
+                }
+            }
+
+            return correctAnswers;
+        }
+
+        function autoFillCorrectAnswers(correctAnswers) {
+            const fromQuestion = parseInt(document.getElementById('fromQuestion').value);
+            const toQuestion = parseInt(document.getElementById('toQuestion').value);
+
+            for (let i = fromQuestion; i <= toQuestion; i++) {
+                const correctAnswer = correctAnswers[i];
+                if (correctAnswer) {
+                    const correctInput = document.querySelector(`input[name="correct${i}"][value="${correctAnswer}"]`);
+                    if (correctInput) {
+                        correctInput.checked = true;
+                    }
+                }
+            }
+        }
+
+        function filterQuestions() {
+            const searchValue = document.getElementById("searchQuestion").value.toLowerCase();
+            const tableRows = document.querySelectorAll("#questionStatusTable tr");
+            let visibleRows = 0;
+
+            tableRows.forEach((row, index) => {
+                if (index === 0) return; // Skip header row
+                
+                const questionNumber = row.querySelector("td:first-child").textContent.toLowerCase();
+
+                if (questionNumber.includes(searchValue)) {
+                    row.style.display = "";
+                    visibleRows++;
+                } else {
+                    row.style.display = "none";
+                }
+            });
+
+            const noResultsRow = document.getElementById("noResultsRow");
+
+            if (visibleRows === 0) {
+                if (!noResultsRow) {
+                    const noResults = document.createElement("tr");
+                    noResults.id = "noResultsRow";
+                    noResults.innerHTML = `<td colspan="2" style="text-align:center; color: var(--danger); padding: 20px;">No results found</td>`;
+                    document.querySelector("#questionStatusTable tbody").appendChild(noResults);
+                }
+            } else {
+                if (noResultsRow) {
+                    noResultsRow.remove();
+                }
+            }
+        }
+
+        function navigateQuestions(direction) {
+            const fromQuestion = parseInt(document.getElementById('fromQuestion').value);
+            const toQuestion = parseInt(document.getElementById('toQuestion').value);
+            
+            const current = document.querySelector('.mcq-item.highlighted');
+            let nextId;
+
+            if (!current) {
+                nextId = `q${fromQuestion}`;
+            } else {
+                const currentNum = parseInt(current.id.replace('q', ''));
+                const nextNum = currentNum + direction;
+                
+                if (nextNum >= fromQuestion && nextNum <= toQuestion) {
+                    nextId = `q${nextNum}`;
+                } else {
+                    showNotification(direction > 0 ? "You're at the last question" : "You're at the first question", 'error');
+                    return;
+                }
+            }
+
+            const nextQuestion = document.getElementById(nextId);
+            if (nextQuestion) {
+                document.querySelectorAll('.mcq-item').forEach(q => q.classList.remove('highlighted'));
+                nextQuestion.classList.add('highlighted');
+                nextQuestion.scrollIntoView({behavior: 'smooth', block: 'center'});
+                
+                setTimeout(() => {
+                    nextQuestion.classList.remove('highlighted');
+                }, 2000);
+            }
+        }
+
+        function resetAll() {
+            if (!confirm("Are you sure you want to reset all answers and results?")) {
+                return;
+            }
+
+            const fromQuestion = parseInt(document.getElementById('fromQuestion').value) || 1;
+            const toQuestion = parseInt(document.getElementById('toQuestion').value) || 5;
+
+            // Clear timer
+            if (timerInterval) {
+                clearInterval(timerInterval);
+            }
+            timeLeft = 0;
+            isPaused = false;
+            alertShown = false;
+            testCompleted = false;
+
+            // Reset timer display
+            const timerInput = document.getElementById('timerInput').value || 10;
+            const initialTime = `${timerInput}:00`;
+            document.getElementById('timerDisplay').textContent = initialTime;
+            document.getElementById('floatingTimerDisplay').textContent = initialTime;
+            
+            const miniTimerDisplay = document.getElementById('miniTimerDisplay');
+            if (miniTimerDisplay) {
+                miniTimerDisplay.textContent = initialTime;
+            }
+
+            // Reset progress bar
+            document.getElementById('progressBar').style.width = '100%';
+
+            // Reset all radio buttons and question status
+            for (let i = fromQuestion; i <= toQuestion; i++) {
+                const radios = document.querySelectorAll(`input[name="q${i}"]`);
+                radios.forEach(radio => {
+                    radio.checked = false;
+                    radio.disabled = false;
+                });
+                updateQuestionStatus(i, 'unattempted');
+
+                const mcqItem = document.getElementById(`q${i}`);
+                if (mcqItem) {
+                    mcqItem.classList.remove('correct-answer', 'incorrect-answer', 'highlighted');
+                    const feedbackDivs = mcqItem.querySelectorAll('.answer-feedback');
+                    feedbackDivs.forEach(div => div.remove());
+                }
+            }
+
+            // Reset correct answer radios
+            const correctRadios = document.querySelectorAll('#correctContainer input[type="radio"]');
+            correctRadios.forEach(radio => {
+                radio.checked = false;
+                radio.disabled = false;
+            });
+
+            // Clear results
+            document.getElementById('result').innerHTML = '';
+            document.getElementById('result').style.display = 'none';
+            
+            // Reset arrays
+            wrongQuestions = [];
+            unattemptedQuestions = [];
+
+            // Reset progress tracker
+            updateProgressTracker(0, 0);
+
+            // Reset timer button
+            const pauseTimerButton = document.getElementById('pauseTimerButton');
+            pauseTimerButton.textContent = "⏸️ Pause";
+
+            showNotification("All data has been reset successfully!", 'success');
+        }
+
+        function confirmStartTimer() {
+            if (confirm("Are you sure you want to start the timer?")) {
+                startTimer();
+            }
+        }
+
+        // Scroll functionality
+        window.onscroll = function() {
+            const scrollTopBtn = document.getElementById('scrollTopBtn');
+            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+                scrollTopBtn.style.display = 'flex';
+            } else {
+                scrollTopBtn.style.display = 'none';
+            }
+        };
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case 's':
+                        e.preventDefault();
+                        if (testCompleted) {
+                            saveWrongAndUnattemptedQuestions();
+                        } else {
+                            showNotification("Complete the test first to save results", 'error');
+                        }
+                        break;
+                    case 'r':
+                        e.preventDefault();
+                        resetAll();
+                        break;
+                }
+            }
+            
+            if (e.key === 'ArrowLeft') {
+                navigateQuestions(-1);
+            } else if (e.key === 'ArrowRight') {
+                navigateQuestions(1);
+            }
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            generateQuestions();
+            showNotification("MCQ Timer loaded successfully! Use Ctrl+S to save results, Ctrl+R to reset.", 'success');
+        });
+    </script>
+</body>
+</html>
