@@ -1,22 +1,25 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.example.myapp" version="1.0.0" xmlns="http://www.w3.org/ns/widgets">
+<widget id="com.example.myapp" version="1.0.0"
+    xmlns="http://www.w3.org/ns/widgets"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
     <name>MyApp</name>
     <description>My HTML App</description>
     <author email="you@example.com">Shivam</author>
 
-    <!-- Allow all access -->
+    <!-- Allow all navigation & requests -->
     <access origin="*" />
     <allow-navigation href="*" />
     <allow-intent href="*" />
 
-    <!-- Android Permissions -->
+    <!-- Android permissions -->
     <platform name="android">
-        <!-- Add tools namespace so tools:ignore works -->
+        <!-- Declare tools namespace for ignore flags -->
         <edit-config file="app/src/main/AndroidManifest.xml" mode="merge" target="/manifest">
             <manifest xmlns:tools="http://schemas.android.com/tools" />
         </edit-config>
 
-        <!-- Permissions with tools:ignore -->
+        <!-- Storage permissions -->
         <edit-config file="app/src/main/AndroidManifest.xml" mode="merge" target="/manifest/uses-permission">
             <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
         </edit-config>
@@ -28,9 +31,8 @@
         </edit-config>
     </platform>
 
-    <!-- Plugins -->
+    <!-- Essential plugins for file download -->
     <plugin name="cordova-plugin-file" source="npm" />
-    <plugin name="cordova-plugin-file-transfer" source="npm" />
     <plugin name="cordova-plugin-advanced-http" source="npm" />
     <plugin name="cordova-plugin-android-permissions" source="npm" />
 </widget>
