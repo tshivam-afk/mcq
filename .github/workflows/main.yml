@@ -37,12 +37,13 @@ jobs:
         restore-keys: |
           gradle-${{ runner.os }}-
 
-    - name: Build APK
+    - name: Build APK with Plugins
       run: |
         cordova platform add android
         cordova plugin add cordova-plugin-file
         cordova plugin add cordova-plugin-file-transfer
         cordova plugin add cordova-plugin-advanced-http
+        cordova plugin add cordova-plugin-android-permissions
         cordova build android
 
     - name: Upload APK
