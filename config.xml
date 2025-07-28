@@ -12,26 +12,29 @@
     <allow-navigation href="*" />
     <allow-intent href="*" />
 
-    <!-- Android permissions -->
+    <!-- Android Permissions -->
     <platform name="android">
-        <!-- Declare tools namespace for ignore flags -->
+        <!-- Declare tools namespace in manifest -->
         <edit-config file="app/src/main/AndroidManifest.xml" mode="merge" target="/manifest">
             <manifest xmlns:tools="http://schemas.android.com/tools" />
         </edit-config>
 
-        <!-- Storage permissions -->
+        <!-- Storage Permissions -->
         <edit-config file="app/src/main/AndroidManifest.xml" mode="merge" target="/manifest/uses-permission">
             <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
         </edit-config>
         <edit-config file="app/src/main/AndroidManifest.xml" mode="merge" target="/manifest/uses-permission">
             <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
         </edit-config>
+        <!-- Fixed tools namespace binding for MANAGE_EXTERNAL_STORAGE -->
         <edit-config file="app/src/main/AndroidManifest.xml" mode="merge" target="/manifest/uses-permission">
-            <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" tools:ignore="ScopedStorage"/>
+            <uses-permission xmlns:tools="http://schemas.android.com/tools"
+                             android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
+                             tools:ignore="ScopedStorage"/>
         </edit-config>
     </platform>
 
-    <!-- Essential plugins for file download -->
+    <!-- Essential Plugins -->
     <plugin name="cordova-plugin-file" source="npm" />
     <plugin name="cordova-plugin-advanced-http" source="npm" />
     <plugin name="cordova-plugin-android-permissions" source="npm" />
