@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="com.example.myapp" version="1.0.0" xmlns="http://www.w3.org/ns/widgets">
+    <name>MyApp</name>
+    <description>My HTML converted to APK</description>
+    <author email="you@example.com">Shivam</author>
+
+    <!-- Allow all access -->
+    <access origin="*" />
+    <allow-navigation href="*" />
+
+    <!-- Plugins for file & download -->
+    <plugin name="cordova-plugin-file" source="npm" />
+    <plugin name="cordova-plugin-file-transfer" source="npm" />
+    <plugin name="cordova-plugin-advanced-http" source="npm" />
+
+    <!-- Permissions -->
+    <preference name="AndroidInsecureFileModeEnabled" value="true" />
+    <preference name="AllowInlineMediaPlayback" value="true" />
+</widget>
